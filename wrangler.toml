@@ -1,0 +1,17 @@
+name = "weather-cf-workers"
+main = "src/index.ts"
+compatibility_date = "2022-09-11"
+
+
+# Define top-level environment variables
+# under the `[vars]` block using
+# the `key = "value"` format
+[vars]
+OPENWEATHER_API_URL = "https://api.openweathermap.org/data/2.5"
+
+
+# The necessary secrets are:
+# - SPARKPOST_KEY
+# - GTOKEN_PRIVKEY
+# - GTOKEN_KID
+# Run `echo <VALUE> | wrangler secret put <NAME>` for each of these
