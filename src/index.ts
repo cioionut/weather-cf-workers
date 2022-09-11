@@ -9,6 +9,7 @@
  */
 
 import getErrorMessage from "./errorHandling";
+import weatherExamplePayload from '../data/init_fday5_weather';
 
 export interface Env {
 	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
@@ -63,7 +64,7 @@ async function handleRequest(request: Request, env: Env) {
 	// console.log(initUrl.searchParams.toString());
 	// console.log(url.toString());
 
-	// return new Response(JSON.stringify({ message: url.searchParams.get('appid') }), { status: 200 });
+	let response = new Response(JSON.stringify(weatherExamplePayload), { status: 200 });
 
 	// Best practice is to always use the original request to construct the new request
 	// to clone all the attributes. Applying the URL also requires a constructor
@@ -71,10 +72,18 @@ async function handleRequest(request: Request, env: Env) {
 	const newRequest = new Request(url.toString(), new Request(request, newRequestInit));
 
 	try {
-		return await fetch(newRequest);
+		response = await fetch(newRequest);
 	} catch (e) {
-		return new Response(JSON.stringify({ error: getErrorMessage(e) }), { status: 500 });
+		response = new Response(JSON.stringify({ error: getErrorMessage(e) }), { status: 500 });
 	}
+
+	const responseHeaders = new Headers(response.headers)
+	responseHeaders.set('Access-Control-Allow-Origin', '*')
+	return new Response(response.body, {
+		headers: responseHeaders,
+		status: response.status,
+		statusText: response.statusText
+	});
 }
 
 export default {
