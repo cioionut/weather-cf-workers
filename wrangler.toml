@@ -11,7 +11,5 @@ OPENWEATHER_API_URL = "https://api.openweathermap.org/data/2.5"
 
 
 # The necessary secrets are:
-# - SPARKPOST_KEY
-# - GTOKEN_PRIVKEY
-# - GTOKEN_KID
-# Run `echo <VALUE> | wrangler secret put <NAME>` for each of these
+# - OPENWEATHER_API_KEY
+# Run `echo <secret-content> | wrangler secret put OPENWEATHER_API_KEY` for each of these
