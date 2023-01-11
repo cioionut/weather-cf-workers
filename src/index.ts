@@ -66,15 +66,24 @@ async function handleRequest(request: Request, env: Env) {
 
   let response = new Response(JSON.stringify(weatherExamplePayload), { status: 200 });
 
-  // Best practice is to always use the original request to construct the new request
-  // to clone all the attributes. Applying the URL also requires a constructor
-  // since once a Request has been constructed, its URL is immutable.
-  const newRequest = new Request(url.toString(), new Request(request, newRequestInit));
 
-  try {
-    response = await fetch(newRequest);
-  } catch (e) {
-    response = new Response(JSON.stringify({ error: getErrorMessage(e) }), { status: 500 });
+  const ua = request.headers.get('user-agent')
+  let botName = ua?.match(/[^\s]+\-Google[^\s;]*|Googlebot[^\s;]*/g);
+
+  // CHECK FOR GOOGLEBOT, IF IS PRESENT RETURN WITH DUMMY DATA LOADED ABOVE
+  if (!botName) {
+    // Best practice is to always use the original request to construct the new request
+    // to clone all the attributes. Applying the URL also requires a constructor
+    // since once a Request has been constructed, its URL is immutable.
+    const newRequest = new Request(url.toString(), new Request(request, newRequestInit));
+
+    try {
+      response = await fetch(newRequest);
+    } catch (e) {
+      response = new Response(JSON.stringify({ error: getErrorMessage(e) }), { status: 500 });
+    }
+  } else {
+    console.log(`Accesed by ${botName}, respond with dummy data`);
   }
 
   const responseHeaders = new Headers(response.headers)
